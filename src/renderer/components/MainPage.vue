@@ -97,8 +97,8 @@
       }
     },
     mounted: function () {
-      // 右键餐单
       let that = this
+      // 右键餐单
       this.itemMenu = new remote.Menu()
       this.itemMenu.append(new remote.MenuItem({
         label: '删除',
@@ -162,6 +162,10 @@
 
       ipcRenderer.on('open-directory-dialog', (e, directory) => {
         this.resolveDirectory(directory)
+      })
+
+      remote.app.on('window-all-closed', () => {
+        fs.appendFileSync(path.join(that.baseUrl, 'history.log'), 'bbbb')
       })
     }
   }

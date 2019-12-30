@@ -1,7 +1,9 @@
 'use strict'
 
 import { app, BrowserWindow, Menu, dialog, ipcMain } from 'electron'
-
+import * as Config from '../config'
+const fs = require('fs')
+const path = require('path')
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -119,7 +121,22 @@ function MenuDialog (type, callback) {
   return true
 }
 
-app.on('ready', createWindow)
+function initAll () {
+  let configDir = app.getPath('userData')
+  let dataDir = path.join(configDir, Config.getLoaclDataDir())
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir)
+  }
+  let historyDir = path.join(configDir, Config.getHistoryDir())
+  if (!fs.existsSync(historyDir)) {
+    fs.mkdirSync(historyDir)
+  }
+}
+
+app.on('ready', () => {
+  createWindow()
+  initAll()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
